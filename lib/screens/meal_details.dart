@@ -5,29 +5,33 @@ import 'package:meals/providers/favorites_Provider.dart';
 
 class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({super.key, required this.meal});
+
   final Meal meal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteMeals = ref.watch(favoritesMealsProvider);
+    final isfavirite = favoriteMeals.contains(meal);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
         actions: [
           IconButton(
             onPressed: () {
-              final wasAdd = ref
+              final wasAdded = ref
                   .read(favoritesMealsProvider.notifier)
-                  .toggelMealFavoriteState(meal);
+                  .toggelMealFavoriteStatus(meal);
               ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    wasAdd ? 'Meal added as a favorite.' : 'Meal removed.',
+                    wasAdded ? 'Meal added as a favorite.' : 'Meal removed.',
                   ),
                 ),
               );
             },
-            icon: Icon(Icons.star),
+            icon: Icon(isfavirite ? Icons.star : Icons.star_border),
           ),
         ],
       ),
