@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals/models/meal.dart';
 import 'package:meals/providers/favorites_provider.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
+import 'package:meals/screens/todo_screen.dart';
 import 'package:meals/widgets/main_drawer.dart';
 import 'package:meals/providers/filters_provider.dart';
 
@@ -54,6 +56,11 @@ class _TabsScreen extends ConsumerState<TabsScreen> {
       activePageTitle = 'Your Favorites';
     }
 
+    if (_selectedPageIndex == 2) {
+      final favoriteMeals = ref.watch(favoritesMealsProvider);
+      activePage = TodoScreen(meal: favoriteMeals);
+      activePageTitle = 'Todo';
+    }
     return Scaffold(
       appBar: AppBar(title: Text(activePageTitle)),
       drawer: MainDrawer(onSelecteScreen: _setScreen),
@@ -67,6 +74,10 @@ class _TabsScreen extends ConsumerState<TabsScreen> {
             label: 'Categories',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_rounded),
+            label: 'Todo',
+          ),
         ],
       ),
     );

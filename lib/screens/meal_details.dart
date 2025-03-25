@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/providers/favorites_Provider.dart';
+import 'package:meals/screens/todo_screen.dart';
 
 class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({super.key, required this.meal});
@@ -12,37 +13,93 @@ class MealDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteMeals = ref.watch(favoritesMealsProvider);
     final isfavirite = favoriteMeals.contains(meal);
+    // final isInList = null;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
         actions: [
-          IconButton(
-            onPressed: () {
-              final wasAdded = ref
-                  .read(favoritesMealsProvider.notifier)
-                  .toggelMealFavoriteStatus(meal);
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    wasAdded ? 'Meal added as a favorite.' : 'Meal removed.',
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  final wasAdded = ref
+                      .read(favoritesMealsProvider.notifier)
+                      .toggelMealFavoriteStatus(meal);
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        wasAdded
+                            ? 'Meal added as a favorite.'
+                            : 'Meal removed.',
+                      ),
+                    ),
+                  );
+                },
+                icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (chiid, animation) {
+                    return RotationTransition(
+                      turns: Tween<double>(
+                        begin: 0.8,
+                        end: 1,
+                      ).animate(animation),
+                      child: chiid,
+                    );
+                  },
+                  child: Icon(
+                    isfavirite ? Icons.star : Icons.star_border,
+                    key: ValueKey(isfavirite),
                   ),
                 ),
-              );
-            },
-            icon: Icon(isfavirite ? Icons.star : Icons.star_border),
+              ),
+              const SizedBox(width: 20),
+              IconButton(
+                onPressed: () {
+                  final wasAdded = ref
+                      .read(favoritesMealsProvider.notifier)
+                      .toggelMealFavoriteStatus(meal);
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        wasAdded
+                            ? 'Meal added as a favorite.'
+                            : 'Meal removed.',
+                      ),
+                    ),
+                  );
+                },
+                icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (chiid, animation) {
+                    return RotationTransition(
+                      turns: Tween<double>(
+                        begin: 0.8,
+                        end: 1,
+                      ).animate(animation),
+                      child: chiid,
+                    );
+                  },
+                  child: Icon(Icons.list_alt_rounded),
+                ),
+              ),
+            ],
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(
-              meal.imageUrl,
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Hero(
+              tag: meal.id,
+              child: Image.network(
+                meal.imageUrl,
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 14),
             Text(
